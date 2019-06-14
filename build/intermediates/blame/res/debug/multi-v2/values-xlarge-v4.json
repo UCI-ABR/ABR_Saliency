@@ -1,0 +1,26 @@
+{
+    "logs": [
+        {
+            "outputFile": "/Users/jkrichma/ABR/ABR_Saliency/build/intermediates/incremental/mergeDebugResources/merged.dir/values-xlarge-v4/values-xlarge-v4.xml",
+            "map": [
+                {
+                    "source": "/Users/jkrichma/.gradle/caches/transforms-2/files-2.1/e55d310f08700f7e32f22b80b9b0a694/res/values-xlarge/values-xlarge.xml",
+                    "from": {
+                        "startLines": "4,7,8,9,10,11,12,13,14",
+                        "startColumns": "4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "231,485,556,627,697,767,835,903,967",
+                        "endColumns": "76,70,70,69,69,67,67,63,54",
+                        "endOffsets": "303,551,622,692,762,830,898,962,1017"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,9,10",
+                        "startColumns": "4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,132,203,274,344,414,482,550,614",
+                        "endColumns": "76,70,70,69,69,67,67,63,54",
+                        "endOffsets": "127,198,269,339,409,477,545,609,664"
+                    }
+                }
+            ]
+        }
+    ]
+}

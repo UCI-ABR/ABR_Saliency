@@ -1,0 +1,43 @@
+apply plugin: 'com.android.application'
+
+buildscript {
+  repositories {
+    mavenCentral()
+    google()
+    jcenter()
+  }
+
+  dependencies {
+    classpath 'com.android.tools.build:gradle:3.4.1'
+  }
+}
+
+android {
+  buildToolsVersion "28.0.3"
+  compileSdkVersion 28
+  defaultConfig {
+    applicationId "abr.main.saliency"
+    multiDexEnabled true
+    minSdkVersion 10
+  }
+}
+
+dependencies {
+  api 'com.github.ytai.ioio:IOIOLibAndroid:5.05'
+  api 'com.github.ytai.ioio:IOIOLibAndroidBluetooth:5.05'
+  api 'com.github.ytai.ioio:IOIOLibAndroidAccessory:5.05'
+  api 'com.github.ytai.ioio:IOIOLibAndroidDevice:5.05'
+  api 'org.opencv:OpenCV-Android:3.1.0'
+  api 'com.google.android.gms:play-services:9.0.2'
+  api 'com.google.zxing:core:3.2.1'
+}
+
+repositories {
+  mavenCentral()
+  maven {
+    url  "http://dl.bintray.com/steveliles/maven"
+  }
+  jcenter()
+  google()
+}
+
