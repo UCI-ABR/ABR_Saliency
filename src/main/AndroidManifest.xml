@@ -11,8 +11,8 @@
 	<uses-feature android:name="android.hardware.camera.autofocus"/>
 	<uses-feature android:name="android.hardware.camera.front"/>
 	<uses-feature android:name="android.hardware.camera.front.autofocus"/>
+<!--	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
@@ -23,7 +23,7 @@
 			android:required="false" />
 		<activity
 			android:label="@string/app_name"
-			android:name="abr.main.Main_activity"
+			android:name=".Main_activity"
 			android:launchMode="singleTask"
 			android:screenOrientation="landscape">
 			<intent-filter>

@@ -32,7 +32,7 @@
         android:textColor = "#FFF"
         android:paddingLeft="350dp"
         android:text="@string/sonar2" />
-    
+
     <Button
         android:id="@+id/btnAuto"
         android:layout_width="@dimen/command_button_size"
@@ -40,7 +40,16 @@
         android:layout_margin="@dimen/command_button_margin"
         android:background="@drawable/button_auto"
         android:layout_alignParentBottom="true"
-		android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true"/>
+
+<!--    <Button
+        android:id="@+id/btnCnt"
+        android:layout_width="@dimen/command_button_size"
+        android:layout_height="@dimen/command_button_size"
+        android:layout_margin="@dimen/command_button_margin"
+        android:background="@drawable/button_auto"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"/>-->
 
     <TextView
         android:id="@+id/sonar1"

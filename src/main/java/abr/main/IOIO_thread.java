@@ -44,8 +44,9 @@ public class IOIO_thread extends BaseIOIOLooper
 			pwm_pan_output = ioio_.openPwmOutput(5, 50);
 			pwm_tilt_output = ioio_.openPwmOutput(6, 50);
 
-			pwm_pan_output.setPulseWidth(1500);
+			pwm_pan_output.setPulseWidth(1600);
 			pwm_tilt_output.setPulseWidth(1500);
+			// JLK used for line following pwm_tilt_output.setPulseWidth(1800);
 			pwm_vel_output.setPulseWidth(1500);
 			pwm_turn_output.setPulseWidth(1500);
 

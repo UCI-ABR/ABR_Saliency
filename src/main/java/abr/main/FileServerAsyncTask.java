@@ -3,15 +3,11 @@ package abr.main;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 
 public class FileServerAsyncTask extends AsyncTask<Void,Void,Object[]> {
 	Object[] objects = new Object[4];

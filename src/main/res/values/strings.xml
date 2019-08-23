@@ -15,7 +15,7 @@
  limitations under the License.
  -->
 <resources>
-  <string name="app_name">ABR_Saliency</string>
+  <string name="app_name">ABR_LineFollow</string>
   <string name="hello_world">Hello world!</string>
   <string name="menu_settings">Settings</string>
   <string name="title_activity_main">ABR_Saliency</string>

@@ -9,7 +9,7 @@ package abr.main;
 
 public final class Manifest {
   public static final class permission {
-    public static final String C2D_MESSAGE="abr.main.saliency.permission.C2D_MESSAGE";
+    public static final String C2D_MESSAGE="abr.main.main.saliency.permission.C2D_MESSAGE";
   }
 
 }

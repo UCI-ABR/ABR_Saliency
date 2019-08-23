@@ -8,7 +8,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.android.tools.build:gradle:3.4.1'
+    classpath 'com.android.tools.build:gradle:3.4.2'
   }
 }
 
@@ -16,7 +16,7 @@ android {
   buildToolsVersion "28.0.3"
   compileSdkVersion 28
   defaultConfig {
-    applicationId "abr.main.saliency"
+    applicationId "abr.main.main.saliency"
     multiDexEnabled true
     minSdkVersion 10
   }
