@@ -18,7 +18,7 @@ android {
   defaultConfig {
     applicationId "abr.main.main.saliency"
     multiDexEnabled true
-    minSdkVersion 10
+    minSdkVersion 23
   }
 }
 

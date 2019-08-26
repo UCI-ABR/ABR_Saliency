@@ -157,8 +157,9 @@ public class Main_activity extends Activity implements IOIOLooperProvider, Senso
 
     private ArrayList<Location> waypoints;
     private double[] pWait;
-    private static final int T = 120;
+    private static final int T = 150;
     private static final double pRwd = 0.5;
+    private double reward;
 
     private long timeWayPtStart;
     private Random randNumGen;
@@ -166,6 +167,10 @@ public class Main_activity extends Activity implements IOIOLooperProvider, Senso
     private boolean reachedLastWayPt = false;
     private boolean reachedWayPt = false;
 
+    // variables for writing out data
+    File rrFile;
+    File recordingFile;
+    FileOutputStream fosRR;
 
     //ui variables
     TextView sonar1Text;
@@ -191,6 +196,8 @@ public class Main_activity extends Activity implements IOIOLooperProvider, Senso
     int turn_speed = 80;
     int turn_right = 1575;
     int turn_left = 1425;
+    int turn_right_sharp = 1600;
+    int turn_left_sharp = 1400;
     int turn_none = 1500;
     int forward_slow = 1600;
     int forward_fast = 1700;
@@ -245,6 +252,50 @@ public class Main_activity extends Activity implements IOIOLooperProvider, Senso
             public void onClick(View v) {
                 if (!autoMode) {
                     v.setBackgroundResource(R.drawable.button_auto_on);
+                    // JLK code block for creating file.  Test test
+                    try {
+                        Calendar calendar = Calendar.getInstance();
+                        java.util.Date now = calendar.getTime();
+                        java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
+                        String time = currentTimestamp.toString();
+                        time = time.replaceAll("[|?*<\":>+\\[\\]/']", "_");
+
+                        File[] externalDirs = getExternalFilesDirs(null);
+                        if(externalDirs.length > 1) {
+                            //rrFile = new File(externalDirs[1].getAbsolutePath() + "/rescuerobotics/"+time);
+                            rrFile = new File(Environment.getExternalStorageDirectory() + "/lineFollow/");
+                            if (!rrFile.exists()) {
+                                rrFile.mkdirs();
+                            }
+                        } else {
+                            //rrFile = new File(externalDirs[0].getAbsolutePath() + "/rescuerobotics/"+time);
+                            rrFile = new File(Environment.getExternalStorageDirectory() + "/lineFollow/");
+                            if (!rrFile.exists()) {
+                                rrFile.mkdirs();
+                            }
+                        }
+                        Log.d("lineFollow", "created directory " + Environment.getExternalStorageDirectory() + "/lineFollow/");
+                        recordingFile = new File(rrFile, time+".csv");
+                        recordingFile.createNewFile();
+
+                        fosRR = new FileOutputStream(recordingFile);
+                        String labels = "Time,Lat,Lon,Waypt,Reward\n";
+                        byte[] b = labels.getBytes();
+                        fosRR.write(b);
+                        Log.i("test","made folder");
+                    } catch (IOException e) {
+                        Log.e("lineFollow", e.toString());
+                    }
+                    String mill_timestamp = System.currentTimeMillis() + "";
+                    String info = mill_timestamp + "," + curr_loc.getLatitude() + "," + curr_loc.getLongitude() + ",0," + pRwd + "\n";
+                    try {
+                        byte[] b = info.getBytes();
+                        fosRR.write(b);
+                        Log.i("test", "wrote");
+                    } catch (IOException e) {
+                        Log.e("lineFollow", e.toString());
+                    }
+                    timeWayPtStart = System.currentTimeMillis();
                     autoMode = true;
                 } else {
                     v.setBackgroundResource(R.drawable.button_auto_off);
@@ -351,127 +402,312 @@ public class Main_activity extends Activity implements IOIOLooperProvider, Senso
         randNumGen = new Random();
         skipWayPt = false;
 
-        // Probability of waiting for a 50% reward to be delivered 45+/-15
-        pWait[0] = 1;
-        pWait[1] = 1;
-        pWait[2] = 1;
-        pWait[3] = 1;
-        pWait[4] = 1;
-        pWait[5] = 1;
-        pWait[6] = 1;
-        pWait[7] = 1;
-        pWait[8] = 1;
-        pWait[9] = 1;
-        pWait[10] = 1;
-        pWait[11] = 1;
-        pWait[12] = 1;
-        pWait[13] = 1;
-        pWait[14] = 1;
-        pWait[15] = 1;
-        pWait[16] = 1;
-        pWait[17] = 1;
-        pWait[18] = 1;
-        pWait[19] = 1;
-        pWait[20] = 1;
-        pWait[21] = 1;
-        pWait[22] = 1;
-        pWait[23] = 1;
-        pWait[24] = 1;
-        pWait[25] = 1;
-        pWait[26] = 1;
-        pWait[27] = 1;
-        pWait[28] = 1;
-        pWait[29] = 1;
-        pWait[30] = 1;
-        pWait[31] = 1;
-        pWait[32] = 1;
-        pWait[33] = 1;
-        pWait[34] = 1;
-        pWait[35] = 1;
-        pWait[36] = 1;
-        pWait[37] = 1;
-        pWait[38] = 1;
-        pWait[39] = 1;
-        pWait[40] = 1;
-        pWait[41] = 1;
-        pWait[42] = 1;
-        pWait[43] = 1;
-        pWait[44] = 1;
-        pWait[45] = 1;
-        pWait[46] = 1;
-        pWait[47] = 1;
-        pWait[48] = 1;
-        pWait[49] = 1;
-        pWait[50] = 0.99999;
-        pWait[51] = 0.99999;
-        pWait[52] = 0.99998;
-        pWait[53] = 0.99996;
-        pWait[54] = 0.99992;
-        pWait[55] = 0.99983;
-        pWait[56] = 0.99967;
-        pWait[57] = 0.99937;
-        pWait[58] = 0.99879;
-        pWait[59] = 0.99773;
-        pWait[60] = 0.99582;
-        pWait[61] = 0.99249;
-        pWait[62] = 0.98682;
-        pWait[63] = 0.97751;
-        pWait[64] = 0.96277;
-        pWait[65] = 0.94035;
-        pWait[66] = 0.90769;
-        pWait[67] = 0.86235;
-        pWait[68] = 0.8026;
-        pWait[69] = 0.72816;
-        pWait[70] = 0.64083;
-        pWait[71] = 0.54468;
-        pWait[72] = 0.44549;
-        pWait[73] = 0.34974;
-        pWait[74] = 0.26319;
-        pWait[75] = 0.18983;
-        pWait[76] = 0.13135;
-        pWait[77] = 0.087345;
-        pWait[78] = 0.055964;
-        pWait[79] = 0.034651;
-        pWait[80] = 0.020799;
-        pWait[81] = 0.012144;
-        pWait[82] = 0.0069191;
-        pWait[83] = 0.0038591;
-        pWait[84] = 0.002113;
-        pWait[85] = 0.0011389;
-        pWait[86] = 0.00060568;
-        pWait[87] = 0.0003185;
-        pWait[88] = 0.00016591;
-        pWait[89] = 8.5749e-05;
-        pWait[90] = 4.4033e-05;
-        pWait[91] = 2.2492e-05;
-        pWait[92] = 1.1439e-05;
-        pWait[93] = 5.7972e-06;
-        pWait[94] = 2.9297e-06;
-        pWait[95] = 1.4772e-06;
-        pWait[96] = 7.4345e-07;
-        pWait[97] = 3.7363e-07;
-        pWait[98] = 1.8756e-07;
-        pWait[99] = 9.4067e-08;
-        pWait[100] = 4.7145e-08;
-        pWait[101] = 2.3615e-08;
-        pWait[102] = 1.1824e-08;
-        pWait[103] = 5.9181e-09;
-        pWait[104] = 2.9614e-09;
-        pWait[105] = 1.4816e-09;
-        pWait[106] = 7.4112e-10;
-        pWait[107] = 3.7068e-10;
-        pWait[108] = 1.8539e-10;
-        pWait[109] = 9.271e-11;
-        pWait[110] = 4.6362e-11;
-        pWait[111] = 2.3183e-11;
-        pWait[112] = 1.1592e-11;
-        pWait[113] = 5.7965e-12;
-        pWait[114] = 2.8984e-12;
-        pWait[115] = 1.4492e-12;
-        pWait[116] = 7.2462e-13;
-        pWait[117] = 3.6232e-13;
-        pWait[118] = 1.8116e-13;
-        pWait[119] = 9.0581e-14;
+        if (pRwd  < 0.51) {
+            // Probability of waiting for a 50% reward to be delivered 40+/-20
+            pWait[0] = 1;
+            pWait[1] = 1;
+            pWait[2] = 1;
+            pWait[3] = 1;
+            pWait[4] = 1;
+            pWait[5] = 1;
+            pWait[6] = 1;
+            pWait[7] = 1;
+            pWait[8] = 1;
+            pWait[9] = 1;
+            pWait[10] = 1;
+            pWait[11] = 1;
+            pWait[12] = 1;
+            pWait[13] = 1;
+            pWait[14] = 1;
+            pWait[15] = 1;
+            pWait[16] = 1;
+            pWait[17] = 1;
+            pWait[18] = 1;
+            pWait[19] = 1;
+            pWait[20] = 1;
+            pWait[21] = 1;
+            pWait[22] = 1;
+            pWait[23] = 1;
+            pWait[24] = 1;
+            pWait[25] = 1;
+            pWait[26] = 1;
+            pWait[27] = 1;
+            pWait[28] = 1;
+            pWait[29] = 1;
+            pWait[30] = 1;
+            pWait[31] = 1;
+            pWait[32] = 1;
+            pWait[33] = 1;
+            pWait[34] = 1;
+            pWait[35] = 1;
+            pWait[36] = 1;
+            pWait[37] = 1;
+            pWait[38] = 1;
+            pWait[39] = 1;
+            pWait[40] = 1;
+            pWait[41] = 1;
+            pWait[42] = 1;
+            pWait[43] = 1;
+            pWait[44] = 1;
+            pWait[45] = 1;
+            pWait[46] = 1;
+            pWait[47] = 0.99999;
+            pWait[48] = 0.99999;
+            pWait[49] = 0.99998;
+            pWait[50] = 0.99997;
+            pWait[51] = 0.99995;
+            pWait[52] = 0.99991;
+            pWait[53] = 0.99985;
+            pWait[54] = 0.99976;
+            pWait[55] = 0.9996;
+            pWait[56] = 0.99934;
+            pWait[57] = 0.99891;
+            pWait[58] = 0.99824;
+            pWait[59] = 0.99718;
+            pWait[60] = 0.99553;
+            pWait[61] = 0.993;
+            pWait[62] = 0.98919;
+            pWait[63] = 0.98354;
+            pWait[64] = 0.97533;
+            pWait[65] = 0.96365;
+            pWait[66] = 0.9474;
+            pWait[67] = 0.92534;
+            pWait[68] = 0.89616;
+            pWait[69] = 0.85866;
+            pWait[70] = 0.81196;
+            pWait[71] = 0.75569;
+            pWait[72] = 0.69032;
+            pWait[73] = 0.6172;
+            pWait[74] = 0.53869;
+            pWait[75] = 0.45786;
+            pWait[76] = 0.3782;
+            pWait[77] = 0.30313;
+            pWait[78] = 0.23549;
+            pWait[79] = 0.17722;
+            pWait[80] = 0.12918;
+            pWait[81] = 0.09124;
+            pWait[82] = 0.062495;
+            pWait[83] = 0.041559;
+            pWait[84] = 0.026869;
+            pWait[85] = 0.016917;
+            pWait[86] = 0.01039;
+            pWait[87] = 0.0062369;
+            pWait[88] = 0.0036656;
+            pWait[89] = 0.0021134;
+            pWait[90] = 0.0011974;
+            pWait[91] = 0.00066781;
+            pWait[92] = 0.00036726;
+            pWait[93] = 0.00019945;
+            pWait[94] = 0.00010712;
+            pWait[95] = 5.6967e-05;
+            pWait[96] = 3.0035e-05;
+            pWait[97] = 1.5716e-05;
+            pWait[98] = 8.1696e-06;
+            pWait[99] = 4.2224e-06;
+            pWait[100] = 2.1715e-06;
+            pWait[101] = 1.112e-06;
+            pWait[102] = 5.6733e-07;
+            pWait[103] = 2.8854e-07;
+            pWait[104] = 1.4635e-07;
+            pWait[105] = 7.4058e-08;
+            pWait[106] = 3.7403e-08;
+            pWait[107] = 1.8859e-08;
+            pWait[108] = 9.4955e-09;
+            pWait[109] = 4.7753e-09;
+            pWait[110] = 2.3992e-09;
+            pWait[111] = 1.2044e-09;
+            pWait[112] = 6.0415e-10;
+            pWait[113] = 3.0289e-10;
+            pWait[114] = 1.5178e-10;
+            pWait[115] = 7.6027e-11;
+            pWait[116] = 3.807e-11;
+            pWait[117] = 1.9058e-11;
+            pWait[118] = 9.5381e-12;
+            pWait[119] = 4.7728e-12;
+            pWait[120] = 2.388e-12;
+            pWait[121] = 1.1946e-12;
+            pWait[122] = 5.9754e-13;
+            pWait[123] = 2.9887e-13;
+            pWait[124] = 1.4948e-13;
+            pWait[125] = 7.4754e-14;
+            pWait[126] = 3.7383e-14;
+            pWait[127] = 1.8694e-14;
+            pWait[128] = 9.3481e-15;
+            pWait[129] = 4.6744e-15;
+            pWait[130] = 2.3374e-15;
+            pWait[131] = 1.1688e-15;
+            pWait[132] = 5.844e-16;
+            pWait[133] = 2.9221e-16;
+            pWait[134] = 1.4611e-16;
+            pWait[135] = 7.3056e-17;
+            pWait[136] = 3.6528e-17;
+            pWait[137] = 1.8264e-17;
+            pWait[138] = 9.1323e-18;
+            pWait[139] = 4.5662e-18;
+            pWait[140] = 2.2831e-18;
+            pWait[141] = 1.1416e-18;
+            pWait[142] = 5.7078e-19;
+            pWait[143] = 2.8539e-19;
+            pWait[144] = 1.427e-19;
+            pWait[145] = 7.1348e-20;
+            pWait[146] = 3.5674e-20;
+            pWait[147] = 1.7837e-20;
+            pWait[148] = 8.9185e-21;
+            pWait[149] = 4.4593e-21;
+        }
+        else {
+            // Probability of waiting for a 95% reward to be delivered 40+/-20
+            pWait[0] = 1;
+            pWait[1] = 1;
+            pWait[2] = 1;
+            pWait[3] = 1;
+            pWait[4] = 1;
+            pWait[5] = 1;
+            pWait[6] = 1;
+            pWait[7] = 1;
+            pWait[8] = 1;
+            pWait[9] = 1;
+            pWait[10] = 1;
+            pWait[11] = 1;
+            pWait[12] = 1;
+            pWait[13] = 1;
+            pWait[14] = 1;
+            pWait[15] = 1;
+            pWait[16] = 1;
+            pWait[17] = 1;
+            pWait[18] = 1;
+            pWait[19] = 1;
+            pWait[20] = 1;
+            pWait[21] = 1;
+            pWait[22] = 1;
+            pWait[23] = 1;
+            pWait[24] = 1;
+            pWait[25] = 1;
+            pWait[26] = 1;
+            pWait[27] = 1;
+            pWait[28] = 1;
+            pWait[29] = 1;
+            pWait[30] = 1;
+            pWait[31] = 1;
+            pWait[32] = 1;
+            pWait[33] = 1;
+            pWait[34] = 1;
+            pWait[35] = 1;
+            pWait[36] = 1;
+            pWait[37] = 1;
+            pWait[38] = 1;
+            pWait[39] = 1;
+            pWait[40] = 1;
+            pWait[41] = 1;
+            pWait[42] = 1;
+            pWait[43] = 1;
+            pWait[44] = 1;
+            pWait[45] = 1;
+            pWait[46] = 1;
+            pWait[47] = 1;
+            pWait[48] = 1;
+            pWait[49] = 1;
+            pWait[50] = 1;
+            pWait[51] = 1;
+            pWait[52] = 1;
+            pWait[53] = 1;
+            pWait[54] = 1;
+            pWait[55] = 1;
+            pWait[56] = 1;
+            pWait[57] = 1;
+            pWait[58] = 1;
+            pWait[59] = 1;
+            pWait[60] = 1;
+            pWait[61] = 1;
+            pWait[62] = 1;
+            pWait[63] = 1;
+            pWait[64] = 1;
+            pWait[65] = 1;
+            pWait[66] = 1;
+            pWait[67] = 1;
+            pWait[68] = 1;
+            pWait[69] = 1;
+            pWait[70] = 1;
+            pWait[71] = 1;
+            pWait[72] = 1;
+            pWait[73] = 1;
+            pWait[74] = 1;
+            pWait[75] = 1;
+            pWait[76] = 1;
+            pWait[77] = 1;
+            pWait[78] = 1;
+            pWait[79] = 1;
+            pWait[80] = 1;
+            pWait[81] = 1;
+            pWait[82] = 0.99999;
+            pWait[83] = 0.99996;
+            pWait[84] = 0.99988;
+            pWait[85] = 0.99966;
+            pWait[86] = 0.99915;
+            pWait[87] = 0.99797;
+            pWait[88] = 0.99544;
+            pWait[89] = 0.99038;
+            pWait[90] = 0.98092;
+            pWait[91] = 0.96441;
+            pWait[92] = 0.93753;
+            pWait[93] = 0.89673;
+            pWait[94] = 0.83915;
+            pWait[95] = 0.76371;
+            pWait[96] = 0.67218;
+            pWait[97] = 0.56939;
+            pWait[98] = 0.46253;
+            pWait[99] = 0.35955;
+            pWait[100] = 0.2673;
+            pWait[101] = 0.19018;
+            pWait[102] = 0.12973;
+            pWait[103] = 0.085071;
+            pWait[104] = 0.053793;
+            pWait[105] = 0.032913;
+            pWait[106] = 0.019554;
+            pWait[107] = 0.011319;
+            pWait[108] = 0.0064044;
+            pWait[109] = 0.0035531;
+            pWait[110] = 0.001938;
+            pWait[111] = 0.0010419;
+            pWait[112] = 0.00055327;
+            pWait[113] = 0.00029076;
+            pWait[114] = 0.00015147;
+            pWait[115] = 7.8334e-05;
+            pWait[116] = 4.0264e-05;
+            pWait[117] = 2.0592e-05;
+            pWait[118] = 1.0487e-05;
+            pWait[119] = 5.3222e-06;
+            pWait[120] = 2.6934e-06;
+            pWait[121] = 1.3599e-06;
+            pWait[122] = 6.8533e-07;
+            pWait[123] = 3.4484e-07;
+            pWait[124] = 1.7329e-07;
+            pWait[125] = 8.6998e-08;
+            pWait[126] = 4.364e-08;
+            pWait[127] = 2.1876e-08;
+            pWait[128] = 1.096e-08;
+            pWait[129] = 5.489e-09;
+            pWait[130] = 2.748e-09;
+            pWait[131] = 1.3754e-09;
+            pWait[132] = 6.8823e-10;
+            pWait[133] = 3.4433e-10;
+            pWait[134] = 1.7225e-10;
+            pWait[135] = 8.6156e-11;
+            pWait[136] = 4.3091e-11;
+            pWait[137] = 2.155e-11;
+            pWait[138] = 1.0777e-11;
+            pWait[139] = 5.3892e-12;
+            pWait[140] = 2.6949e-12;
+            pWait[141] = 1.3476e-12;
+            pWait[142] = 6.7382e-13;
+            pWait[143] = 3.3693e-13;
+            pWait[144] = 1.6847e-13;
+            pWait[145] = 8.4237e-14;
+            pWait[146] = 4.2119e-14;
+            pWait[147] = 2.106e-14;
+            pWait[148] = 1.053e-14;
+            pWait[149] = 5.2651e-15;
+        }
 
  /*       for (int i = 0; i< T; i++) {
             Log.d("lineFollow", "pWait(" + i + ") = "  + pWait[i]);
@@ -481,8 +717,6 @@ public class Main_activity extends Activity implements IOIOLooperProvider, Senso
          criteria.setAccuracy(Criteria.ACCURACY_FINE);
 
         dest_loc = waypoints.get(0);
-
-        timeWayPtStart = System.currentTimeMillis();
 
         //set up location listener
         mLocationListener = new LocationListener() {
@@ -504,81 +738,86 @@ public class Main_activity extends Activity implements IOIOLooperProvider, Senso
                 );
                 Log.d("decline", "Declination = " + geoField.getDeclination());*/
 
-                int timeElapsed = (int) ((System.currentTimeMillis() - timeWayPtStart) / 1000);
                 curr_loc = location;
                 curr_lat = curr_loc.getLatitude();
                 curr_lon = curr_loc.getLongitude();
 //                Log.d("lineFollow", "Curr = ("+ curr_lat + ", " + curr_lon + ")");
 
-/*                for (int i = 0; i < waypoints.size(); i++) {
-                    dest_loc = waypoints.get(i);
-                    dest_lat = dest_loc.getLatitude();
-                    dest_lon = dest_loc.getLongitude();
-                    Log.d("lineFollow", i + ": Dest = ("+ dest_lat + ", " + dest_lon + ")");
-                }*/
+                if (autoMode) {
+                    int timeElapsed = (int) ((System.currentTimeMillis() - timeWayPtStart) / 1000);
 
-/*                wayTxt = "WayPoints ";
-                boolean wayPntFound = false;
-                for (int i = 0; i < waypoints.size(); i++) {
-                    if (curr_loc.distanceTo(waypoints.get(i)) < 500) {
-                        wayTxt = wayTxt + i + ", ";
-                        wayPntFound = true;
-                    }
-                }
-                if (wayPntFound) {
-                    Context context = getApplicationContext();
-                    Toast toast = Toast.makeText(context, wayTxt, Toast.LENGTH_SHORT);
-                    toast.show();
-                }*/
-
-                if (reachedLastWayPt) {
-                    toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-                    toneG.startTone(ToneGenerator.TONE_CDMA_ABBR_ALERT, 500);
-                }
-                else {
-                    skipWayPt = true; // JLK temporary for testing
-                    if (curr_loc.distanceTo(waypoints.get(locInx)) < 20) {
-                        context = getApplicationContext();
-                        text = "Reached WayPoint" + locInx + " in " + timeElapsed + " secs";
-                        toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
-                        toast.show();
+                    if (reachedLastWayPt) {
                         toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-                        toneG.startTone(ToneGenerator.TONE_CDMA_PIP, 200);
-                        ++locInx;
-                        if (locInx >= waypoints.size()) {
-                            reachedLastWayPt = true;
-                        }
-                        else {
-                            dest_loc = waypoints.get(locInx);
-                            timeWayPtStart = System.currentTimeMillis();
-                            skipWayPt = false;
-                            reachedWayPt = true;
-                        }
-                    }
-                    else {
-                        reachedWayPt = false;
-                        // At least one second has elapsed, update pWait
-                        if (timeElapsed > 0) {
-     /*                       Context context2 = getApplicationContext();
-                            CharSequence text2 = "On WayPoint" + locInx;
-                            Toast toast2 = Toast.makeText(context2, text2, Toast.LENGTH_SHORT);
-                            toast2.show();
-                            ToneGenerator toneG2 = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-                            toneG2.startTone(ToneGenerator.TONE_CDMA_ABBR_REORDER, 500);*/
-                            Log.d("lineFollow", "WayPoint" + locInx + " timeElapsed = " + timeElapsed);
+                        toneG.startTone(ToneGenerator.TONE_CDMA_ABBR_ALERT, 500);
 
-                            // If not skipping a waypoint or heading toward last waypoint and waited too long, then skip to a random waypoint
-                            if (!skipWayPt && locInx < (waypoints.size() - 1) && randNumGen.nextDouble() > pWait[timeElapsed - 1]) {
-                                locInx = randNumGen.nextInt(waypoints.size() - (locInx + 1)) + (locInx + 1);
-                                context = getApplicationContext();
-                                text = "Skipping to WayPoint" + locInx;
-                                toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
-                                toast.show();
-                                toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-                                toneG.startTone(ToneGenerator.TONE_CDMA_PIP, 200);
+                        try {
+                            fosRR.close();
+                        } catch (IOException e) {
+                            Log.e("lineFollow", e.toString());
+                        }
+                    } else {
+                        // skipWayPt = true; // JLK temporary for testing
+                        if (curr_loc.distanceTo(waypoints.get(locInx)) < 20) {
+                            context = getApplicationContext();
+                            text = "Reached WayPoint" + locInx + " in " + timeElapsed + " secs";
+                            toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+                            toast.show();
+                            toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+                            toneG.startTone(ToneGenerator.TONE_CDMA_PIP, 200);
+                            ++locInx;
+                            if (locInx >= waypoints.size()) {
+                                reachedLastWayPt = true;
+                                reward = 10;
+                            } else {
                                 dest_loc = waypoints.get(locInx);
                                 timeWayPtStart = System.currentTimeMillis();
-                                skipWayPt = true;
+                                skipWayPt = false;
+                                reachedWayPt = true;
+                                if (randNumGen.nextDouble() < pRwd) {
+                                    reward = 1;
+                                }
+                                else {
+                                    reward = 0;
+                                }
+                            }
+                            String mill_timestamp = System.currentTimeMillis() + "";
+                            String info = mill_timestamp + "," + curr_loc.getLatitude() + "," + curr_loc.getLongitude() + "," + locInx + "," + reward + "\n";
+                            try {
+                                byte[] b = info.getBytes();
+                                fosRR.write(b);
+                                Log.i("test", "wrote");
+                            } catch (IOException e) {
+                                Log.e("lineFollow", e.toString());
+                            }
+                        } else {
+                            reachedWayPt = false;
+                            // At least one second has elapsed, update pWait
+                            if (timeElapsed > 0) {
+
+                                Log.d("lineFollow", "WayPoint" + locInx + " timeElapsed = " + timeElapsed);
+
+                                // If not skipping a waypoint or heading toward last waypoint and waited too long, then skip to a random waypoint
+                                if (!skipWayPt && locInx < (waypoints.size() - 1) && randNumGen.nextDouble() > pWait[timeElapsed - 1]) {
+                                    locInx = randNumGen.nextInt(waypoints.size() - (locInx + 1)) + (locInx + 1);
+                                    context = getApplicationContext();
+                                    text = "Skipping to WayPoint" + locInx;
+                                    toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+                                    toast.show();
+                                    toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+                                    toneG.startTone(ToneGenerator.TONE_CDMA_ABBR_INTERCEPT, 200);
+                                    dest_loc = waypoints.get(locInx);
+                                    timeWayPtStart = System.currentTimeMillis();
+                                    skipWayPt = true;
+                                    String mill_timestamp = System.currentTimeMillis() + "";
+                                    String info = mill_timestamp + "," + curr_loc.getLatitude() + "," + curr_loc.getLongitude() + "," + locInx + ",-1\n";
+                                    try {
+                                        byte[] b = info.getBytes();
+                                        fosRR.write(b);
+                                        Log.i("test", "wrote");
+                                    } catch (IOException e) {
+                                        Log.e("lineFollow", e.toString());
+                                    }
+                                }
                             }
                         }
                     }
@@ -977,20 +1216,21 @@ public class Main_activity extends Activity implements IOIOLooperProvider, Senso
                 m_ioio_thread.move(forward_stop);
                 m_ioio_thread.turn(turn_none);
             }
-            // JLK for now stop if sonar close
-            else if (sonar1 < 10 || sonar2 < 10 || sonar3 < 10){
+            // If middle sonar close, stop and wait
+            else if (sonar2 < 10){
                 m_ioio_thread.move(forward_stop);
                 m_ioio_thread.turn(turn_none);
             }
-/*            else if (sonar2 < 10 ){
-
-                // JLK obstacle avoidance TBD
-                if(sonar1 > sonar3){
-                    m_ioio_thread.turn(1500-50);
-                } else {
-                    m_ioio_thread.turn(1500+50);
-                }
-            } */
+            // If left sonar close, turn right
+            else if (sonar1 < 10){
+                m_ioio_thread.move(forward_slow);
+                m_ioio_thread.turn(turn_right_sharp);
+            }
+            // If right sonar close, turn left
+            else if (sonar3 < 10){
+                m_ioio_thread.move(forward_slow);
+                m_ioio_thread.turn(turn_left_sharp);
+            }
             // go to way point or follow road...
             else {
                 if (Math.abs(bearing-heading) < 10.0 || Math.abs(bearing-heading) > 350) {
